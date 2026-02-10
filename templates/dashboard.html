@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+<p><strong>Balance:</strong> {{ balance }}</p>
+
+<!-- Deposit Form -->
+<h3>Deposit Money</h3>
+<form method="post" action="/deposit">
+  Amount: <input type="number" name="amount" step="0.01" min="0.01" required><br>
+  <button type="submit">Deposit</button>
+</form>
+
+<!-- Transfer Form -->
+<h3>Transfer Money</h3>
+<form method="post" action="/transfer">
+  To Username: <input name="to_username" required><br>
+  Amount: <input type="number" name="amount" step="0.01" min="0.01" required><br>
+  <button type="submit">Send</button>
+</form>
+
+<!-- Transactions List -->
+<h3>Recent Transactions</h3>
+<ul>
+  {% if transactions %}
+    {% for t in transactions %}
+      <li>
+        From: {{ t.from_account if t.from_account else "Deposit" }},
+        To: {{ t.to_account }},
+        Amount: {{ t.amount }},
+        Time: {{ t.timestamp }}
+      </li>
+    {% endfor %}
+  {% else %}
+    <li>No transactions yet.</li>
+  {% endif %}
+</ul>
+
+{% endblock %}

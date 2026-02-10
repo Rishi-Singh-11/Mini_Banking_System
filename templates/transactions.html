@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+<h2>All Transactions</h2>
+<ul>
+  {% if transactions %}
+    {% for t in transactions %}
+      <li>
+        From: {{ t.from_account }}, To: {{ t.to_account }}, Amount: {{ t.amount }}, Time: {{ t.timestamp }}
+      </li>
+    {% endfor %}
+  {% else %}
+    <li>No transactions yet.</li>
+  {% endif %}
+</ul>
+<a href="/dashboard">Back to Dashboard</a>
+{% endblock %}

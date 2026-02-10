@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Mini Banking System{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Mini Banking System</h1>
+    <nav>
+      {% if session.user_id %}
+        <a href="/dashboard">Dashboard</a> |
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a> |
+        <a href="/register">Register</a>
+      {% endif %}
+    </nav>
+    <hr>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
