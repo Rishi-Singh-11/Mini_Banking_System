@@ -7,11 +7,13 @@ app.secret_key = "supersecret"  # required for sessions
 
 # Initialize DB tables if not exist
 
-@app.before_first_request
+@app.before_request
 def initialize_database():
-    db = database.get_db()
-    with open("schema.sql", "r") as f:
-        db.executescript(f.read())
+    if not os.path.exists("/tmp/bank.db"):
+        db = database.get_db()
+        with open("schema.sql", "r") as f:
+            db.executescript(f.read())
+
 
 
 # ---------------------------
