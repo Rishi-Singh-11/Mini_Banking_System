@@ -1,41 +1,146 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard - Mini Banking System{% endblock %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<p><strong>Balance:</strong> {{ balance }}</p>
+<div style="margin-bottom: 2rem;">
+    <h1 style="color: white; font-size: 2.5rem; margin-bottom: 0.5rem;">Your Dashboard</h1>
+    <p style="color: rgba(255, 255, 255, 0.9);">Manage your finances with ease</p>
+</div>
 
-<!-- Deposit Form -->
-<h3>Deposit Money</h3>
-<form method="post" action="/deposit">
-  Amount: <input type="number" name="amount" step="0.01" min="0.01" required><br>
-  <button type="submit">Deposit</button>
-</form>
+<!-- Balance Card -->
+<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 50%;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+        <p style="opacity: 0.9; font-size: 0.95rem; margin-bottom: 0.5rem;">Available Balance</p>
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">${{ "%.2f"|format(balance) }}</h2>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <span style="background: rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                💳 Account Active
+            </span>
+        </div>
+    </div>
+</div>
 
-<!-- Transfer Form -->
-<h3>Transfer Money</h3>
-<form method="post" action="/transfer">
-  To Username: <input name="to_username" required><br>
-  Amount: <input type="number" name="amount" step="0.01" min="0.01" required><br>
-  <button type="submit">Send</button>
-</form>
+<!-- Quick Actions Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+    
+    <!-- Deposit Money Card -->
+    <div class="card">
+        <h3 style="color: #2d3748; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">💰</span>
+            Deposit Money
+        </h3>
+        
+        <form method="POST" action="/deposit">
+            <div class="form-group">
+                <label for="deposit_amount">Amount ($)</label>
+                <input 
+                    type="number" 
+                    id="deposit_amount" 
+                    name="amount" 
+                    step="0.01" 
+                    min="0.01" 
+                    required 
+                    placeholder="0.00"
+                >
+            </div>
 
-<!-- Transactions List -->
-<h3>Recent Transactions</h3>
-<ul>
-  {% if transactions %}
-    {% for t in transactions %}
-      <li>
-        From: {{ t.from_account if t.from_account else "Deposit" }},
-        To: {{ t.to_account }},
-        Amount: {{ t.amount }},
-        Time: {{ t.timestamp }}
-      </li>
-    {% endfor %}
-  {% else %}
-    <li>No transactions yet.</li>
-  {% endif %}
-</ul>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Deposit
+            </button>
+        </form>
+    </div>
 
+    <!-- Transfer Money Card -->
+    <div class="card">
+        <h3 style="color: #2d3748; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">💸</span>
+            Send Money
+        </h3>
+        
+        <form method="POST" action="/transfer">
+            <div class="form-group">
+                <label for="to_username">Recipient Username</label>
+                <input 
+                    type="text" 
+                    id="to_username" 
+                    name="to_username" 
+                    required 
+                    placeholder="Enter recipient's username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="transfer_amount">Amount ($)</label>
+                <input 
+                    type="number" 
+                    id="transfer_amount" 
+                    name="amount" 
+                    step="0.01" 
+                    min="0.01" 
+                    required 
+                    placeholder="0.00"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Transfer Money
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="card">
+    <h3 style="color: #2d3748; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.5rem;">📝</span>
+        Recent Transactions
+    </h3>
+
+    {% if transactions %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid #e2e8f0;">
+                    <th style="padding: 1rem; text-align: left; color: #718096; font-weight: 600; font-size: 0.9rem;">FROM</th>
+                    <th style="padding: 1rem; text-align: left; color: #718096; font-weight: 600; font-size: 0.9rem;">TO</th>
+                    <th style="padding: 1rem; text-align: right; color: #718096; font-weight: 600; font-size: 0.9rem;">AMOUNT</th>
+                    <th style="padding: 1rem; text-align: left; color: #718096; font-weight: 600; font-size: 0.9rem;">TIME</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr style="border-bottom: 1px solid #f7fafc; transition: background 0.2s;" onmouseover="this.style.background='#f7fafc'" onmouseout="this.style.background='white'">
+                    <td style="padding: 1rem; color: #2d3748;">
+                        {% if t.from_account %}
+                            Account #{{ t.from_account }}
+                        {% else %}
+                            <span style="color: #48bb78; font-weight: 600;">💰 Deposit</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem; color: #2d3748;">
+                        Account #{{ t.to_account }}
+                    </td>
+                    <td style="padding: 1rem; text-align: right; font-weight: 700; font-size: 1.1rem;">
+                        <span style="color: #48bb78;">${{ "%.2f"|format(t.amount) }}</span>
+                    </td>
+                    <td style="padding: 1rem; color: #718096; font-size: 0.9rem;">
+                        {{ t.timestamp }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem; color: #718096;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+        <p style="font-size: 1.1rem;">No transactions yet</p>
+        <p style="font-size: 0.95rem; margin-top: 0.5rem;">Start by depositing or sending money</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
