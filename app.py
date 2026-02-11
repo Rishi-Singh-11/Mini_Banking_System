@@ -6,10 +6,12 @@ app = Flask(__name__)
 app.secret_key = "supersecret"  # required for sessions
 
 # Initialize DB tables if not exist
-with app.app_context():
-    db = database.get_db()
-    with open("schema.sql", "r") as f:
-        db.executescript(f.read())
+
+if not os.path.exists("/tmp/bank.db"):
+    with app.app_context():
+        db = database.get_db()
+        with open("schema.sql", "r") as f:
+            db.executescript(f.read())
 
 # ---------------------------
 # ROUTES
